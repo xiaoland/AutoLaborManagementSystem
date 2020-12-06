@@ -7,12 +7,9 @@ import pyaudio
 import wave
 
 
-class Player():
+class Player:
 
-    def __init__(self, log, setting):
-
-        self.log = log
-        self.setting = setting
+    def __init__(self):
 
         self.p = pyaudio.PyAudio()
 

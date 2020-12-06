@@ -5,11 +5,14 @@
 
 import requests
 import urllib.parse
+from player import Player
 
 
 class BaiduTts:
 
     def __init__(self):
+
+        self.player = Player()
 
         self.token = ""
         self.app_id = ""
@@ -66,6 +69,7 @@ class BaiduTts:
             print("BaiduTts: tts requested success")
             with open("./data/audio/say.wav", "wb+") as f:
                 f.write(res.content)
+            self.player.say()
             return True
         else:
             print("BaiduTts: tts requested fail!")

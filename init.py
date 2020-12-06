@@ -39,7 +39,7 @@ class Init:
         time_count_thread = threading.Thread(target=self.time_count, args=(1200, self.reporter.start))
         time_count_thread.start()
 
-        self.tts.start("")
+        self.tts.start("同学们好啊，这里是由YYH开发的「自动劳动管理系统」。现在，让我们开始劳动吧")
 
 
 if __name__ == "__main__":
