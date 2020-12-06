@@ -35,9 +35,11 @@ class Init:
         启动程序
         :return:
         """
-        self.log.add_log("Init: System now running...", 1)
+        self.log.add_log("Init: System is now running...", 1)
         time_count_thread = threading.Thread(target=self.time_count, args=(1200, self.reporter.start))
         time_count_thread.start()
+
+        self.tts.start("")
 
 
 if __name__ == "__main__":

@@ -44,7 +44,7 @@ class BaiduTts:
         :param text: 要合成的文本
         :return: bool
         """
-        self.log.add_log("BaiduTts: requesting tts..., text: " + text, 1, is_speak=False)
+        print("BaiduTts: requesting tts..., text: " + text)
 
         text = urllib.parse.quote(bytes(text.encode("utf-8"))) # ATTENTION, error may be here
 
