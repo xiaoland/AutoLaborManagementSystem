@@ -4,7 +4,10 @@
 # description: The Main Part
 
 from log import Log
-from reporter import Reporter
+from face_recognization import FaceReg
+from arrangement_reader import ArrangementReader
+from camera import CameraManager
+from phases import *
 import threading
 import time
 
@@ -14,8 +17,12 @@ class Init:
     def __init__(self):
 
         self.log = Log()
+        self.face_reg = FaceReg(self.log)
+        self.arrangement_reader = ArrangementReader(self.log)
+        self.camera_manager = CameraManager(self.log)
         self.tts = self.log.tts
-        self.reporter = Reporter(self.log)
+
+        self.phase1 = Phase1(self.log, elf.tts, self.arrangement_reader, self.camera_manager)
 
     def time_count(self, second, callback):
 
@@ -40,6 +47,10 @@ class Init:
         time_count_thread.start()
 
         self.tts.start("同学们好啊，这里是由YYH开发的「自动劳动管理系统」。现在，让我们开始劳动吧")
+
+        self.arrangement_reader.read_in()
+
+        self.phase1.start()
 
 
 if __name__ == "__main__":

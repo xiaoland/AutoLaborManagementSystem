@@ -28,14 +28,14 @@ class FaceReg(object):
         self.sk = "FwnT6QdW1TRvkVTNTFWuR1G6pG4vpser"
         self.token = ""
 
-    def read_img(self, img, img_type):
+    def read_img(self, img, img_type="file_path"):
 
         """
         读取图片数据
         :return
         """
         if img_type == "file_path":
-            file = open(img, "rb")
+            file = open("./data/image" + img, "rb")
             return_data = file.read()
             file.close()
             return return_data

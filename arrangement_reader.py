@@ -1,0 +1,65 @@
+# coding=utf-8
+# author: Lan_zhijiang
+# date: 2020/12/6
+# description: read in arrangement
+
+import json
+
+
+class ArrangementReader:
+
+    def __init__(self, log):
+
+        self.log = log
+        self.names = json.load(open("./data/json/names.json", "r", encoding="utf-8"))
+        self.raw_arrangement = {}
+        self.class_arrangement = {}
+        self.public_labor_arranagement = []
+
+    def read_in(self):
+
+        """
+        读入安排表
+        :return:
+        """
+        self.raw_arrangement = json.load(open("./data/json/arrangement.json", "r", encoding="utf-8"))
+        self.class_arrangement = self.raw_arrangement["班级"]
+        self.public_labor_arranagement = self.raw_arrangement["工地"]
+
+    def get_pubilc_labor_arrangement(self):
+
+        """
+        返回工地人员名单(str)
+        :return: str
+        """
+        return self.get_names(self.public_labor_arranagement)
+
+    def get_names(self, lists):
+
+        """
+        :param lists: 列表
+        :return:
+        """
+        names = ""
+        for name in lists:
+            names = names + name + ","
+        return names
+
+    def get_name(self, user_id):
+
+        """
+        获取名字
+        :param user_id:
+        :return:
+        """
+        return self.names[user_id]["name"]
+
+    def get_index(self, name, lists):
+
+        """
+
+        :param name:
+        :param lists:
+        :return:
+        """
+        return lists.index(name)
