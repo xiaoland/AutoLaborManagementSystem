@@ -70,7 +70,7 @@ class Init:
         time_count_thread.start()
 
         self.tts.start("同学们好啊，这里是由YYH开发的「自动劳动管理系统」。现在，让我们开始劳动吧")
-        
+
         self.arrangement_reader.read_in()
 
         self.phase1_start()
@@ -91,10 +91,13 @@ class Init:
             command = input("Command输入： ")
             self.camera_manager.capture_image()
 
-            if self.face_reg.face_detect(self.face_reg.read_img("img.jpg"))["face_num"] == 0:
+            face_num = self.face_reg.face_detect(self.face_reg.read_img("img.jpg"))["face_num"]
+            if face_num == 0:
                 self.tts.start("没有检测到人脸，请对准摄像头重拍")
-
+            else:
+                self.tts.start("Face Detected. Start searching...")
             user_id = self.face_reg.face_search(self.face_reg.read_img("img.jpg"))["user_list"]["user_id"]
+
             if command[0] == "1":
                 index = self.arrangement_reader.get_index(self.arrangement_reader.get_name(int(user_id)),
                                                           self.arrangement_reader.class_arrangement["摆桌椅"])
@@ -102,9 +105,11 @@ class Init:
             elif command[0] == "2":
                index = self.arrangement_reader.get_index(self.arrangement_reader.get_name(int(user_id)),
                                                          self.arrangement_reader.class_arrangement["窗户+窗台"])
+               self.sign_result["窗户+窗台"][index] = True
             else:
                 index = self.arrangement_reader.get_index(self.arrangement_reader.get_name(int(user_id)),
                                                           self.arrangement_reader.class_arrangement["图书角+黑板+讲台"])
+                self.sign_result["图书角+黑板+讲台"][index] = True
 
     def phase1_start(self):
 
