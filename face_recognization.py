@@ -12,7 +12,7 @@ import base64
 
 class FaceReg(object):
 
-    def __init__(self, img, img_type, log):
+    def __init__(self, img_type, log):
 
         """
         人脸识别类
@@ -23,7 +23,6 @@ class FaceReg(object):
         self.log = log
 
         self.img_type = img_type
-        self.img = img
         self.ak = "n8C6ht73hh75pgYUtwgbviVB"
         self.sk = "FwnT6QdW1TRvkVTNTFWuR1G6pG4vpser"
         self.token = ""

@@ -15,11 +15,12 @@ class CameraManager:
         self.camera_id = camera_id
         self.camera = cv2.VideoCapture(self.camera_id)
 
-    def capture_image(self, fn="img.jpg"):
+    def capture_image(self, fn="img.jpg", face=True):
 
         """
         拍照
         :param fn: 文件名
+        :param face
         :return:
         """
         self.log.add_log("CameraManager: capturing one image...", 1)
