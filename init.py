@@ -7,7 +7,7 @@ from log import Log
 from face_recognization import FaceReg
 from arrangement_reader import ArrangementReader
 from camera import CameraManager
-from phases import *
+from
 import threading
 import time
 
@@ -87,25 +87,35 @@ class Init:
             窗户+窗台： 2 + 窗户号
             黑板等： 3 即可
         """)
-        while self.is_end:
+        while self.is_end[0]:
             command = input("Command输入： ")
-            self.camera_manager.capture_image()
+            img = self.camera_manager.capture_image()
+            self.camera_manager.show_image(img)
 
             face_num = self.face_reg.face_detect(self.face_reg.read_img("img.jpg"))["face_num"]
-            if face_num == 0:
-                self.tts.start("没有检测到人脸，请对准摄像头重拍")
-            else:
-                self.tts.start("Face Detected. Start searching...")
+            while True:
+                if face_num == 0:
+                    self.tts.start("没有检测到人脸，请对准摄像头重拍")
+                else:
+                    self.tts.start("Face Detected. Start searching...")
+                    break
+
             user_id = self.face_reg.face_search(self.face_reg.read_img("img.jpg"))["user_list"]["user_id"]
 
             if command[0] == "1":
                 index = self.arrangement_reader.get_index(self.arrangement_reader.get_name(int(user_id)),
                                                           self.arrangement_reader.class_arrangement["摆桌椅"])
-                self.sign_result["摆桌椅"][index] = True
+                if index+1 == int(command[1]):
+                    self.sign_result["摆桌椅"][index] = True
+                else:
+                    self.tts.start("错误的人脸和对应列数！")
             elif command[0] == "2":
                index = self.arrangement_reader.get_index(self.arrangement_reader.get_name(int(user_id)),
                                                          self.arrangement_reader.class_arrangement["窗户+窗台"])
-               self.sign_result["窗户+窗台"][index] = True
+               if index+1 == int(command[1]):
+                   self.sign_result["窗户+窗台"][index] = True
+               else:
+                   self.tts.start("错误的人脸和对应窗户号！")
             else:
                 index = self.arrangement_reader.get_index(self.arrangement_reader.get_name(int(user_id)),
                                                           self.arrangement_reader.class_arrangement["图书角+黑板+讲台"])

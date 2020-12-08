@@ -4,6 +4,7 @@
 # description: baidu tts
 
 import requests
+import json
 import urllib.parse
 from player import Player
 
@@ -63,7 +64,7 @@ class BaiduTts:
         }
 
         res = requests.post(url,
-                            body=param)
+                            body=json.dumps(param))
 
         if "audio" in res.headers["Content-Type"]:
             print("BaiduTts: tts requested success")

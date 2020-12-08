@@ -27,6 +27,8 @@ class FaceReg(object):
         self.sk = "FwnT6QdW1TRvkVTNTFWuR1G6pG4vpser"
         self.token = ""
 
+        self.get_token()
+
     def read_img(self, img, img_type="file_path"):
 
         """
@@ -86,6 +88,24 @@ class FaceReg(object):
                           data=json.dumps(data))
 
         return r.json()
+
+    def face_detect(self, face):
+
+        """
+        检测人脸
+        :param face:
+        :return:
+        """
+        url = "https://aip.baidubce.com/rest/2.0/face/v3/detect" + "?access_token=" + self.token
+        headers = {"Content-Type": "application/json"}
+        data = {
+                "image": str(base64.b64encode(face), "utf-8"),
+                "image_type": "BASE64"
+        }
+
+        r = requests.post(url,
+                          headers=headers,
+                          data=json.dumps(data))
 
     def compare_face(self, face1, face2):
 
