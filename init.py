@@ -7,8 +7,9 @@ from log import Log
 from face_recognization import FaceReg
 from arrangement_reader import ArrangementReader
 from camera import CameraManager
-from
+from sign_window import SignWindow
 import threading
+from tkinter import *
 import time
 
 
@@ -20,14 +21,10 @@ class Init:
         self.face_reg = FaceReg("file_path", self.log)
         self.arrangement_reader = ArrangementReader(self.log)
         self.camera_manager = CameraManager(self.log)
+        self.sign_window = SignWindow()
         self.tts = self.log.tts
 
-        self.is_end = [
-            False,
-            False,
-            False,
-            False
-        ]
+        self.is_end = False
 
         self.sign_result = {
             "扫地": {},
@@ -38,6 +35,8 @@ class Init:
             "图书角+黑板+讲台": {},
             "倒垃圾": {}
         }
+
+        self.now_sign_row_index = 0
 
     def time_count(self, second, callback):
 
@@ -69,57 +68,99 @@ class Init:
         time_count_thread = threading.Thread(target=self.time_count, args=(1200, self.generate_report))
         time_count_thread.start()
 
-        self.tts.start("同学们好啊，这里是由YYH开发的「自动劳动管理系统」。现在，让我们开始劳动吧")
+        self.tts.start("Hi~ 这里是袁翊闳开发的【自动劳动管理系统】")
+        self.tts.start("主人，现在，是时候开始劳动了")
 
         self.arrangement_reader.read_in()
 
         self.phase1_start()
 
-    def phase1_sign(self):
+    def init_sign_window(self):
 
         """
-        开始签名
+        初始化签名窗口
         :return:
         """
-        print("""
-            输入规则
-            摆桌椅： 1 + 你摆的桌椅列数
-            窗户+窗台： 2 + 窗户号
-            黑板等： 3 即可
-        """)
-        while self.is_end[0]:
-            command = input("Command输入： ")
-            img = self.camera_manager.capture_image()
-            self.camera_manager.show_image(img)
 
-            face_num = self.face_reg.face_detect(self.face_reg.read_img("img.jpg"))["face_num"]
-            while True:
-                if face_num == 0:
-                    self.tts.start("没有检测到人脸，请对准摄像头重拍")
-                else:
-                    self.tts.start("Face Detected. Start searching...")
-                    break
+        # INIT THE SIGN WINDOW
+        window = Tk()
+        window.title("Sign Window")
+        window.geometry('1024x600')
+        notice = Label(window, text="请点击按钮并签到", font=("Arial", 15))
+        notice.pack(side=TOP)
 
-            user_id = self.face_reg.face_search(self.face_reg.read_img("img.jpg"))["user_list"]["user_id"]
+        # RUN THE WINDOW
+        window.mainloop()
 
-            if command[0] == "1":
-                index = self.arrangement_reader.get_index(self.arrangement_reader.get_name(int(user_id)),
-                                                          self.arrangement_reader.class_arrangement["摆桌椅"])
-                if index+1 == int(command[1]):
-                    self.sign_result["摆桌椅"][index] = True
-                else:
-                    self.tts.start("错误的人脸和对应列数！")
-            elif command[0] == "2":
-               index = self.arrangement_reader.get_index(self.arrangement_reader.get_name(int(user_id)),
-                                                         self.arrangement_reader.class_arrangement["窗户+窗台"])
-               if index+1 == int(command[1]):
-                   self.sign_result["窗户+窗台"][index] = True
-               else:
-                   self.tts.start("错误的人脸和对应窗户号！")
+    def sign(self, command):
+
+        """
+        进行签名
+        :param command: 签到模式
+        :return:
+        """
+        img = self.camera_manager.capture_image()
+        self.camera_manager.show_image(img)
+
+        face_num = self.face_reg.face_detect(self.face_reg.read_img("img.jpg"))["face_num"]
+        while True:
+            if face_num == 0:
+                self.tts.start("没有检测到人脸，请对准摄像头重拍")
             else:
-                index = self.arrangement_reader.get_index(self.arrangement_reader.get_name(int(user_id)),
-                                                          self.arrangement_reader.class_arrangement["图书角+黑板+讲台"])
-                self.sign_result["图书角+黑板+讲台"][index] = True
+                self.tts.start("Face Detected. Start searching...")
+                break
+
+        user_id = self.face_reg.face_search(self.face_reg.read_img("img.jpg"))["user_list"]["user_id"]
+
+        if command == 1:
+            index = self.arrangement_reader.get_index(self.arrangement_reader.get_name(int(user_id)),
+                                                      self.arrangement_reader.class_arrangement["摆桌椅"])
+            if index + 1 == int(command[1]):
+                self.sign_result["摆桌椅"][index] = True
+
+                next_name = self.arrangement_reader.class_arrangement["摆桌椅"][index]
+                self.tts.start("请" + next_name + "同学开始扫地")
+
+            else:
+                self.tts.start("错误的人脸和对应列数！")
+        elif command == 2:
+            index = self.arrangement_reader.get_index(self.arrangement_reader.get_name(int(user_id)),
+                                                      self.arrangement_reader.class_arrangement["窗户+窗台"])
+            if index + 1 == int(command[1]):
+                self.sign_result["窗户+窗台"][index] = True
+            else:
+                self.tts.start("错误的人脸和对应窗户号！")
+        elif command == 3:
+            index = self.arrangement_reader.get_index(self.arrangement_reader.get_name(int(user_id)),
+                                                      self.arrangement_reader.class_arrangement["图书角+黑板+讲台"])
+            self.sign_result["图书角+黑板+讲台"][index] = True
+        elif command == 4:
+            index = self.arrangement_reader.get_index(self.arrangement_reader.get_name(int(user_id)),
+                                                      self.arrangement_reader.class_arrangement["扫地"])
+            if index + 1 == self.now_sign_row_index:
+                self.sign_result["扫地"][index] = True
+
+                next_name = self.arrangement_reader.class_arrangement["扫地"][index]
+                self.tts.start("请" + next_name + "同学开始拖地")
+
+            else:
+                self.tts.start("错误的人脸和对应列数！")
+        elif command == 4:
+            index = self.arrangement_reader.get_index(self.arrangement_reader.get_name(int(user_id)),
+                                                      self.arrangement_reader.class_arrangement["拖地"])
+            if index + 1 == self.now_sign_row_index:
+                self.sign_result["拖地"][index] = True
+
+                next_name = self.arrangement_reader.class_arrangement["拖地"][index]
+                self.tts.start("请" + next_name + "同学开始扫地")
+
+            else:
+                self.tts.start("错误的人脸和对应列数！")
+        elif command == 5:
+            index = self.arrangement_reader.get_index(self.arrangement_reader.get_name(int(user_id)),
+                                                      self.arrangement_reader.class_arrangement["扫地"])
+            self.sign_result["倒垃圾"][index] = True
+
 
     def phase1_start(self):
 
@@ -129,13 +170,13 @@ class Init:
         """
         self.log.add_log("Phase1: now start", 1)
         self.tts.start("现在，开始第一阶段。请以下同学留下，其余同学全部出去或在后面等着")
-        table = self.arrangement_reader.get_names(self.arrangement_reader.class_arrangement["摆座椅"])
+        table = self.arrangement_reader.get_names(self.arrangement_reader.class_arrangement["摆桌椅"])
         window = self.arrangement_reader.get_names(self.arrangement_reader.class_arrangement["窗户+窗台"])
         blackboard = self.arrangement_reader.get_names(self.arrangement_reader.class_arrangement["图书角+黑板+讲台"])
 
         self.tts.start("以下同学负责摆桌椅，现在开始工作。按照摆完以后请过来选择列数完成签名，")
         self.tts.start(table)
-        self.tts.start("摆桌椅要求：全部拉开，保证一定距离以方面扫地拖地；椅子要翻上去")
+        self.tts.start("摆桌椅要求：全部拉开，保 证一定距离以方面扫地拖地；椅子要翻上去")
 
         self.tts.start("以下同学负责擦窗台和窗户。按照读的顺序，每人一个窗，从只有窗户的一侧从前往后数，门的一侧也是从前往后数")
         self.tts.start(window)
@@ -148,7 +189,7 @@ class Init:
         video_recorder = threading.Thread(target=self.camera_manager.capture_video, args=("phase1-record1",))
         video_recorder.start()
 
-        self.phase1_sign()
+        self.init_sign_window()
 
 
 if __name__ == "__main__":

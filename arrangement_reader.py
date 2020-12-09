@@ -22,8 +22,9 @@ class ArrangementReader:
         读入安排表
         :return:
         """
+        self.log.add_log("Reader: reading arrangement...", 1)
         self.raw_arrangement = json.load(open("./data/json/arrangement.json", "r", encoding="utf-8"))
-        self.class_arrangement = self.raw_arrangement["班级"]
+        self.class_arrangement = self.raw_arrangement["教室"]
         self.public_labor_arranagement = self.raw_arrangement["工地"]
 
     def get_pubilc_labor_arrangement(self):

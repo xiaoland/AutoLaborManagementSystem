@@ -10,37 +10,38 @@ import wave
 class Player:
 
     def __init__(self):
+        
+        pass
 
-        self.p = pyaudio.PyAudio()
-
-    def play(self, fp):
+    def play(self, fp): # 一定要关掉类防止占用
 
         """
         基本play
         :param fp: 文件路径
         :return:
         """
+        p = pyaudio.PyAudio()
         try:
             wf = wave.open(fp)
         except wave.Error:
             print("Player: Cannot open the file")
             return
 
-        stream = self.p.open(
-            format=self.p.get_format_from_width(wf.getsampwidth()),
+        stream = p.open(
+            format=p.get_format_from_width(wf.getsampwidth()),
             channels=wf.getnchannels(),
             rate=wf.getframerate(),
             output=True
         )
 
         data = wf.readframes(1024)
-        while data != "":
+        while data != b"":
             stream.write(data)
             data = wf.readframes(1024)
 
         stream.stop_stream()
         stream.close()
-        self.p.terminate()
+        p.terminate()
 
     def say(self):
 
@@ -50,3 +51,4 @@ class Player:
         """
         print("Player: Now playing say.wav")
         self.play(r"./data/audio/say.wav")
+        print("Player: Playing end")

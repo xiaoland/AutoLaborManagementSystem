@@ -5,7 +5,7 @@
 
 import requests
 import json
-import urllib.parse
+from urllib import request, parse
 from player import Player
 
 
@@ -16,8 +16,8 @@ class BaiduTts:
         self.player = Player()
 
         self.token = ""
-        self.app_id = ""
-        self.app_key = ""
+        self.app_id = "TSFp0BKH547h7Agjf2WkV2Ll"
+        self.app_key = "c9RZ1ZLxPe6wQVWOUwjaWOLvM7EpXHwe"
 
         self.get_token()
 
@@ -50,7 +50,8 @@ class BaiduTts:
         """
         print("BaiduTts: requesting tts..., text: " + text)
 
-        text = urllib.parse.quote(bytes(text.encode("utf-8"))) # ATTENTION, error may be here
+        text = parse.quote_plus(text) # ATTENTION, error may be here
+        print("urlencoded's text: ", text)
 
         url = "http://tsn.baidu.com/text2audio"
         param = {
@@ -63,17 +64,23 @@ class BaiduTts:
             "aue": 6
         }
 
-        res = requests.post(url,
-                            body=json.dumps(param))
+        data = parse.urlencode(param)
+        req = request.Request(url, data.encode('utf-8'))
 
-        if "audio" in res.headers["Content-Type"]:
+        f = request.urlopen(req)
+        result_str = f.read()
+
+        headers = dict((name.lower(), value) for name, value in f.headers.items())
+
+        if "audio" in headers["content-type"]:
             print("BaiduTts: tts requested success")
             with open("./data/audio/say.wav", "wb+") as f:
-                f.write(res.content)
+                f.write(result_str)
             self.player.say()
             return True
         else:
             print("BaiduTts: tts requested fail!")
+            print(res.json())
             return False
 
 

@@ -3,14 +3,14 @@
 # date: 2020/12/6
 # description: sign window
 
-import tkinter as tk
+from tkinter import *
 
 
-class SignWindow(tk.Frame):
+class SignWindow(Frame):
 
     def __init__(self):
 
-        super(SignWindow, self).__init__()
+        Frame.__init__(self)
 
     def init_window(self):
 
@@ -18,4 +18,6 @@ class SignWindow(tk.Frame):
         初始化窗口
         :return:
         """
-        
+        self.pack()
+        Button(self, )
+
