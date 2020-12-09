@@ -60,6 +60,8 @@ class BaiduTts:
             "cuid": "ALMS",
             "ctp": 1,
             "lan": "zh",
+            "vol": 8,
+            "spd": 5,
             "per": 4,
             "aue": 6
         }
@@ -80,7 +82,7 @@ class BaiduTts:
             return True
         else:
             print("BaiduTts: tts requested fail!")
-            print(res.json())
+            print(result_str)
             return False
 
 
