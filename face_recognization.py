@@ -36,7 +36,7 @@ class FaceReg(object):
         :return
         """
         if img_type == "file_path":
-            file = open("./data/image" + img, "rb")
+            file = open("./data/image/" + img, "rb")
             return_data = file.read()
             file.close()
             return return_data
