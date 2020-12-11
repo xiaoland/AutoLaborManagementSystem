@@ -71,7 +71,7 @@ class Init:
 
         # 摆桌椅Frame
         desk_place = Frame(window, height=25)
-        desc_desk = Label(window, text="摆桌椅签名区", font=("Helvetica", 15))
+        desc_desk = Label(desk_place, text="摆桌椅签名区", font=("Helvetica", 15))
         desc_desk.pack(side=TOP)
         row_1_button = Button(desk_place, height=10, width=10, command=lambda : self.sign(1, 1), text="列1")
         row_1_button.pack(side=LEFT)
@@ -92,9 +92,33 @@ class Init:
 
         desk_place.pack(side=TOP)
 
+        # 窗户+窗台签名区
+        window_place = Frame(window, height=25)
+        window_desk = Label(window_place, text="窗户+窗台签名区", font=("Helvetica", 15))
+        window_desk.pack(side=TOP)
+        row_1_button = Button(window_place, height=10, width=10, command=lambda: self.sign(1, 1), text="窗1")
+        row_1_button.pack(side=LEFT)
+        row_2_button = Button(window_place, height=10, width=10, command=lambda: self.sign(1, 2), text="窗2")
+        row_2_button.pack(side=LEFT)
+        row_3_button = Button(window_place, height=10, width=10, command=lambda: self.sign(1, 3), text="窗3")
+        row_3_button.pack(side=LEFT)
+        row_4_button = Button(window_place, height=10, width=10, command=lambda: self.sign(1, 4), text="窗4")
+        row_4_button.pack(side=LEFT)
+
+        window_place.pack(side=TOP)
+
+        # 黑板签名区
+        bb_place = Frame(window, height=25, width=50)
+        bb_notice = Label(bb_place, text="黑板+图书角签名区", font=("Helvetica", 15))
+        bb_notice.pack(side=TOP)
+        button = Button(bb_place, height=10, width=10, command=lambda: self.sign(3, 1), text="点ME")
+        button.pack(side=LEFT)
+
+        # ATTENTION: PACK IN THE END
+
         # 扫地签名
         sweep_place = Frame(window, height=25)
-        sweep_notice = Label(window, text="扫地签名区", font=("Helvetica", 15))
+        sweep_notice = Label(sweep_place, text="扫地签名区", font=("Helvetica", 15))
         sweep_notice.pack(side=TOP)
         row_1_button = Button(sweep_place, height=10, width=10, command=lambda: self.sign(4, 1), text="列1")
         row_1_button.pack(side=LEFT)
@@ -139,22 +163,24 @@ class Init:
         mop_place.pack(side=TOP)
 
         # 倒垃圾签名
-        trash_place = Frame(window, height=25)
+        trash_place = Frame(window, height=25, width=50)
         trash_notice = Label(trash_place, text="倒垃圾签名区", font=("Helvetica", 15))
         trash_notice.pack(side=TOP)
-        button = Button(trash_place, height=10, width=10, command=lambda: self.sign(5, 1), text="点")
+        button = Button(trash_place, height=10, width=10, command=lambda: self.sign(6, 1), text="点ME")
         button.pack(side=LEFT)
 
         trash_place.pack(side=LEFT)
 
         # 杂物间签名区
-        room_place = Frame(window, height=25)
+        room_place = Frame(window, height=25, width=50)
         room_notice = Label(room_place, text="杂物间签名区", font=("Helvetica", 15))
         room_notice.pack(side=TOP)
-        button = Button(room_place, height=10, width=10, command=lambda: self.sign(5, 1), text="点")
+        button = Button(room_place, height=10, width=10, command=lambda: self.sign(7, 1), text="点ME")
         button.pack(side=LEFT)
-        
+
         room_place.pack(side=LEFT)
+
+        bb_place.pack(side=LEFT)
 
         # RUN THE WINDOW
         window.mainloop()
@@ -332,6 +358,10 @@ class Init:
         self.tts.start("主人~ 现在，是时候开始劳动了~")
 
         self.arrangement_reader.read_in()
+
+        public = self.arrangement_reader.get_names(self.arrangement_reader.public_labor_arranagement)
+        self.tts.start(public)
+        self.tts.start("这些同学马上跟着正诺恒，拿上一个扫把和垃圾铲，还有两个垃圾袋去工地！")
 
         self.phase1_start()
 
