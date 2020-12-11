@@ -10,6 +10,7 @@ from camera import CameraManager
 import threading
 from tkinter import *
 import time
+import json
 
 
 class Init:
@@ -52,6 +53,7 @@ class Init:
         开始生成报告
         :return:
         """
+        json.dump(self.sign_result, open("./data/json/report.json", "w", encoding="utf-8"))
 
     def init_sign_window(self):
 
@@ -62,7 +64,7 @@ class Init:
 
         # INIT THE SIGN WINDOW
         window = Tk()
-        window.title("Sign Window")
+        window.title("自动签到系统")
         window.geometry('1024x600')
 
         # SET THE NOTICE LABLE
@@ -96,13 +98,13 @@ class Init:
         window_place = Frame(window, height=25)
         window_desk = Label(window_place, text="窗户+窗台签名区", font=("Helvetica", 15))
         window_desk.pack(side=TOP)
-        row_1_button = Button(window_place, height=10, width=10, command=lambda: self.sign(1, 1), text="窗1")
+        row_1_button = Button(window_place, height=10, width=10, command=lambda: self.sign(2, 1), text="窗1")
         row_1_button.pack(side=LEFT)
-        row_2_button = Button(window_place, height=10, width=10, command=lambda: self.sign(1, 2), text="窗2")
+        row_2_button = Button(window_place, height=10, width=10, command=lambda: self.sign(2, 2), text="窗2")
         row_2_button.pack(side=LEFT)
-        row_3_button = Button(window_place, height=10, width=10, command=lambda: self.sign(1, 3), text="窗3")
+        row_3_button = Button(window_place, height=10, width=10, command=lambda: self.sign(2, 3), text="窗3")
         row_3_button.pack(side=LEFT)
-        row_4_button = Button(window_place, height=10, width=10, command=lambda: self.sign(1, 4), text="窗4")
+        row_4_button = Button(window_place, height=10, width=10, command=lambda: self.sign(2, 4), text="窗4")
         row_4_button.pack(side=LEFT)
 
         window_place.pack(side=TOP)
@@ -136,6 +138,8 @@ class Init:
         row_7_button.pack(side=LEFT)
         row_8_button = Button(sweep_place, height=10, width=10, command=lambda: self.sign(4, 8), text="列8")
         row_8_button.pack(side=LEFT)
+        row_9_button = Button(sweep_place, height=10, width=10, command=lambda: self.sign(4, 8), text="列9")
+        row_9_button.pack(side=LEFT)
 
         sweep_place.pack(side=TOP)
 
@@ -158,6 +162,8 @@ class Init:
         row_7_button = Button(mop_place, height=10, width=10, command=lambda: self.sign(5, 7), text="列7")
         row_7_button.pack(side=LEFT)
         row_8_button = Button(mop_place, height=10, width=10, command=lambda: self.sign(5, 8), text="列8")
+        row_8_button.pack(side=LEFT)
+        row_8_button = Button(mop_place, height=10, width=10, command=lambda: self.sign(5, 8), text="列9")
         row_8_button.pack(side=LEFT)
 
         mop_place.pack(side=TOP)
@@ -196,6 +202,7 @@ class Init:
         img = self.camera_manager.capture_image()
         self.camera_manager.show_image(img)
 
+        self.generate_report()
         detect_res = self.face_reg.face_detect(self.face_reg.read_img("img.jpg"))
         try:
             face_num = detect_res["result"]["face_num"]
@@ -227,7 +234,7 @@ class Init:
                 self.sign_result["摆桌椅"][index] = True
                 self.tts.start("签到完成")
 
-                next_name = self.arrangement_reader.class_arrangement["摆桌椅"][index]
+                next_name = self.arrangement_reader.class_arrangement["扫地"][index]
                 self.tts.start("请" + next_name + "同学开始扫地")
 
             else:
@@ -261,26 +268,30 @@ class Init:
                 return
 
             if index + 1 == int(row):
-                if self.sign_result["摆桌椅"][index] is True:
+                try:
+                    if self.sign_result["摆桌椅"][index] is True:
 
-                    self.sign_result["扫地"][index] = True
-                    self.tts.start("签到完成")
+                        self.sign_result["扫地"][index] = True
+                        self.tts.start("签到完成")
 
-                    next_name = self.arrangement_reader.class_arrangement["扫地"][index]
-                    self.tts.start("请" + next_name + "同学开始拖地")
+                        next_name = self.arrangement_reader.class_arrangement["拖地"][index]
+                        self.tts.start("请" + next_name + "同学开始拖地")
 
-                    is_end = True
-                    for i in self.sign_result["扫地"].keys():
-                        if self.sign_result["扫地"][i] is False:
-                            is_end = False
-                    if is_end:
-                        trash = self.arrangement_reader.get_names(self.arrangement_reader.class_arrangement["倒垃圾"])
+                        is_end = True
+                        for i in self.sign_result["扫地"].keys():
+                            if self.sign_result["扫地"][i] is False:
+                                is_end = False
+                        if is_end:
+                            trash = self.arrangement_reader.get_names(self.arrangement_reader.class_arrangement["倒垃圾"])
 
-                        self.tts.start(trash)
-                        self.tts.start("请这些同学现在开始倒垃圾")
+                            self.tts.start(trash)
+                            self.tts.start("请这些同学现在开始倒垃圾")
+                except KeyError:
+                    self.tts.start("摆桌椅的还没摆完呢！")
+                    return
                 else:
                     self.tts.start("你的任务还没有开始呢！")
-                    c = input("ALLOW?: ")
+                    c = str(input("ALLOW?: "))
                     if c == 1:
                         self.sign_result["扫地"][index] = True
                         self.tts.start("签到完成")
@@ -294,25 +305,29 @@ class Init:
                 return
 
             if index + 1 == int(row):
-                if self.sign_result["扫地"][index] is True:
-                    self.sign_result["拖地"][index] = True
-                    self.tts.start("签到完成")
-
-                    is_end = True
-                    for i in self.sign_result["拖地"].keys():
-                        if self.sign_result["拖地"][i] is False:
-                            is_end = False
-                    if is_end:
-                        room = self.arrangement_reader.get_names(self.arrangement_reader.class_arrangement["杂物间+柜台"])
-
-                        self.tts.start(room)
-                        self.tts.start("这些同学则现在开始清理杂物间和柜台")
-                else:
-                    self.tts.start("你的任务还没有开始呢！")
-                    c = input("ALLOW?: ")
-                    if c == 1:
-                        self.sign_result["扫地"][index] = True
+                try:
+                    if self.sign_result["扫地"][index] is True:
+                        self.sign_result["拖地"][index] = True
                         self.tts.start("签到完成")
+
+                        is_end = True
+                        for i in self.sign_result["拖地"].keys():
+                            if self.sign_result["拖地"][i] is False:
+                                is_end = False
+                        if is_end:
+                            room = self.arrangement_reader.get_names(self.arrangement_reader.class_arrangement["杂物间+柜台"])
+
+                            self.tts.start(room)
+                            self.tts.start("这些同学则现在开始清理杂物间和柜台")
+                    else:
+                        self.tts.start("你的任务还没有开始呢！")
+                        c = str(input("ALLOW?: "))
+                        if c == 1:
+                            self.sign_result["扫地"][index] = True
+                            self.tts.start("签到完成")
+                except KeyError:
+                    self.tts.start("扫地的还没扫呢！你怎么签名")
+                    return
             else:
                 self.tts.start("错误的人脸和对应列数！")
         elif command == 6:
@@ -343,7 +358,7 @@ class Init:
         table = self.arrangement_reader.get_names(self.arrangement_reader.class_arrangement["摆桌椅"])
         window = self.arrangement_reader.get_names(self.arrangement_reader.class_arrangement["窗户+窗台"])
         blackboard = self.arrangement_reader.get_names(self.arrangement_reader.class_arrangement["图书角+黑板+讲台"])
-        
+
         self.tts.start(table)
         self.tts.start("这些同学负责摆桌椅，现在开始工作。按照摆完以后请过来选择列数完成签名，")
         self.tts.start("摆桌椅要求：全部拉开，保 证一定距离以方面扫地拖地；椅子要翻上去")
@@ -358,7 +373,7 @@ class Init:
         self.tts.start("这些同学负责整理黑板、图书柜、讲台")
         self.tts.start("黑板要擦干净，擦完以后一定打开屏幕，不要遮住了。讲台不要有垃圾，粉笔灰擦干净，完成后过来签名")
 
-        video_recorder = threading.Thread(target=self.camera_manager.capture_video, args=("phase1-record1",))
+        video_recorder = threading.Thread(target=self.camera_manager.capture_video, args=("phase1-record1.avi",))
         video_recorder.start()
 
         self.init_sign_window()
@@ -376,7 +391,7 @@ class Init:
 
         self.tts.start("Hi~ 这里是袁翊闳开发的【自动劳动管理系统】")
         self.tts.start("主人~ 现在，是时候开始劳动了~")
-
+        #
         self.arrangement_reader.read_in()
 
         public = self.arrangement_reader.get_names(self.arrangement_reader.public_labor_arranagement)
@@ -384,6 +399,8 @@ class Init:
         self.tts.start("这些同学马上跟着正诺恒，拿上一个扫把和垃圾铲，还有两个垃圾袋去工地！")
 
         self.phase1_start()
+
+        self.generate_report()
 
 
 if __name__ == "__main__":

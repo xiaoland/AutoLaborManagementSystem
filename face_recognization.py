@@ -155,7 +155,7 @@ class FaceReg(object):
         r = requests.post(url,
                           headers=headers,
                           data=json.dumps(data))
-
+        print(r.json())
         return r.json()
 
     def face_sign_up(self, face, user_id):

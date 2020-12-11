@@ -65,6 +65,7 @@ class ArrangementReader:
         """
         try:
             index = lists.index(name)
+            print("INDEX: ", index)
         except ValueError:
             return False
         else:

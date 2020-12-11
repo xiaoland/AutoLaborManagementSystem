@@ -62,7 +62,7 @@ class BaiduTts:
             "lan": "zh",
             "vol": 8,
             "spd": 5,
-            "per": 4,
+            "per": 2,
             "aue": 6
         }
 
