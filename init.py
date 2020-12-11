@@ -222,6 +222,7 @@ class Init:
                                                       self.arrangement_reader.class_arrangement["摆桌椅"])
             if index is False:
                 self.tts.start("你可不是干这个的啊！")
+                return
             if index + 1 == int(row):
                 self.sign_result["摆桌椅"][index] = True
                 self.tts.start("签到完成")
@@ -236,6 +237,7 @@ class Init:
                                                       self.arrangement_reader.class_arrangement["窗户+窗台"])
             if index is False:
                 self.tts.start("你可不是干这个的啊！")
+                return
 
             if index + 1 == int(row):
                 self.sign_result["窗户+窗台"][index] = True
@@ -247,6 +249,7 @@ class Init:
                                                       self.arrangement_reader.class_arrangement["图书角+黑板+讲台"])
             if index is False:
                 self.tts.start("你可不是干这个的啊！")
+                return
 
             self.sign_result["图书角+黑板+讲台"][index] = True
             self.tts.start("签到完成")
@@ -255,6 +258,7 @@ class Init:
                                                       self.arrangement_reader.class_arrangement["扫地"])
             if index is False:
                 self.tts.start("你可不是干这个的啊！")
+                return
 
             if index + 1 == int(row):
                 if self.sign_result["摆桌椅"][index] is True:
@@ -276,6 +280,10 @@ class Init:
                         self.tts.start("请这些同学现在开始倒垃圾")
                 else:
                     self.tts.start("你的任务还没有开始呢！")
+                    c = input("ALLOW?: ")
+                    if c == 1:
+                        self.sign_result["扫地"][index] = True
+                        self.tts.start("签到完成")
             else:
                 self.tts.start("错误的人脸和对应列数！")
         elif command == 5:
@@ -283,6 +291,7 @@ class Init:
                                                       self.arrangement_reader.class_arrangement["拖地"])
             if index is False:
                 self.tts.start("你可不是干这个的啊！")
+                return
 
             if index + 1 == int(row):
                 if self.sign_result["扫地"][index] is True:
@@ -300,17 +309,28 @@ class Init:
                         self.tts.start("这些同学则现在开始清理杂物间和柜台")
                 else:
                     self.tts.start("你的任务还没有开始呢！")
+                    c = input("ALLOW?: ")
+                    if c == 1:
+                        self.sign_result["扫地"][index] = True
+                        self.tts.start("签到完成")
             else:
                 self.tts.start("错误的人脸和对应列数！")
         elif command == 6:
             index = self.arrangement_reader.get_index(self.arrangement_reader.get_name(int(user_id)),
                                                       self.arrangement_reader.class_arrangement["倒垃圾"])
+            if index is False:
+                self.tts.start("你可不是干这个的啊！")
+                return
+
             self.sign_result["倒垃圾"][index] = True
         elif command == 7:
             index = self.arrangement_reader.get_index(self.arrangement_reader.get_name(int(user_id)),
                                                       self.arrangement_reader.class_arrangement["杂物间+柜台"])
-            self.sign_result["杂物间+柜台"][index] = True
 
+            if index is False:
+                self.tts.start("你可不是干这个的啊！")
+                return
+            self.sign_result["杂物间+柜台"][index] = True
 
     def phase1_start(self):
 
