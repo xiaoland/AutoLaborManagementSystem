@@ -53,7 +53,7 @@ class ArrangementReader:
         :param user_id:
         :return:
         """
-        return self.names[user_id]["name"]
+        return self.names[str(user_id)]["name"]
 
     def get_index(self, name, lists):
 
@@ -63,4 +63,9 @@ class ArrangementReader:
         :param lists:
         :return:
         """
-        return lists.index(name)
+        try:
+            index = lists.index(name)
+        except ValueError:
+            return False
+        else:
+            return index
