@@ -236,6 +236,7 @@ class Init:
 
                 next_name = self.arrangement_reader.class_arrangement["扫地"][index]
                 self.tts.start("请" + next_name + "同学开始扫地")
+                self.tts.start("你负责的是" + str(index + 1) + "列，要扫干净哦！第九列是指教室的后面和讲台")
 
             else:
                 self.tts.start("错误的人脸和对应列数！")
@@ -276,6 +277,7 @@ class Init:
 
                         next_name = self.arrangement_reader.class_arrangement["拖地"][index]
                         self.tts.start("请" + next_name + "同学开始拖地")
+                        self.tts.start("你负责的是" + str(index + 1) + "列，要拖干净哦！第九列是指教室的后面和讲台")
 
                         is_end = True
                         for i in self.sign_result["扫地"].keys():
