@@ -138,7 +138,7 @@ class Init:
         row_7_button.pack(side=LEFT)
         row_8_button = Button(sweep_place, height=10, width=10, command=lambda: self.sign(4, 8), text="列8")
         row_8_button.pack(side=LEFT)
-        row_9_button = Button(sweep_place, height=10, width=10, command=lambda: self.sign(4, 8), text="列9")
+        row_9_button = Button(sweep_place, height=10, width=10, command=lambda: self.sign(4, 9), text="后面+讲台")
         row_9_button.pack(side=LEFT)
 
         sweep_place.pack(side=TOP)
@@ -163,7 +163,7 @@ class Init:
         row_7_button.pack(side=LEFT)
         row_8_button = Button(mop_place, height=10, width=10, command=lambda: self.sign(5, 8), text="列8")
         row_8_button.pack(side=LEFT)
-        row_8_button = Button(mop_place, height=10, width=10, command=lambda: self.sign(5, 8), text="列9")
+        row_8_button = Button(mop_place, height=10, width=10, command=lambda: self.sign(5, 9), text="后面+讲台")
         row_8_button.pack(side=LEFT)
 
         mop_place.pack(side=TOP)
