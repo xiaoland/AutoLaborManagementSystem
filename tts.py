@@ -60,9 +60,9 @@ class BaiduTts:
             "cuid": "ALMS",
             "ctp": 1,
             "lan": "zh",
-            "vol": 8,
+            "vol": 10,
             "spd": 5,
-            "per": 2,
+            "per": 4,
             "aue": 6
         }
 

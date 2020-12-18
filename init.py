@@ -293,10 +293,10 @@ class Init:
                     return
                 else:
                     self.tts.start("你的任务还没有开始呢！")
-                    c = str(input("ALLOW?: "))
-                    if c == 1:
-                        self.sign_result["扫地"][index] = True
-                        self.tts.start("签到完成")
+                    # c = str(input("ALLOW?: "))
+                    # if c == 1:
+                    #     self.sign_result["扫地"][index] = True
+                    #     self.tts.start("签到完成")
             else:
                 self.tts.start("错误的人脸和对应列数！")
         elif command == 5:
@@ -323,16 +323,16 @@ class Init:
                             self.tts.start("这些同学则现在开始清理杂物间和柜台")
                     else:
                         self.tts.start("你的任务还没有开始呢！")
-                        c = str(input("ALLOW?: "))
-                        if c == 1:
-                            self.sign_result["拖地"][index] = True
-                            self.tts.start("签到完成")
+                        # c = str(input("ALLOW?: "))
+                        # if c == 1:
+                        #     self.sign_result["拖地"][index] = True
+                        #     self.tts.start("签到完成")
                 except KeyError:
                     self.tts.start("扫地的还没扫呢！你怎么签名")
-                    c = str(input("ALLOW?: "))
-                    if c == 1:
-                        self.sign_result["拖地"][index] = True
-                        self.tts.start("签到完成")
+                    # c = str(input("ALLOW?: "))
+                    # if c == 1:
+                    #     self.sign_result["拖地"][index] = True
+                    #     self.tts.start("签到完成")
                     return
             else:
                 self.tts.start("错误的人脸和对应列数！")
