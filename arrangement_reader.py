@@ -43,7 +43,7 @@ class ArrangementReader:
         """
         names = ""
         for name in lists:
-            names = names + name + ","
+            names = names + name + "你负责第" + str(lists.index(name) + 1) + "列，"
         return names
 
     def get_name(self, user_id):

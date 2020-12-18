@@ -214,7 +214,7 @@ class Init:
             if face_num == 0:
                 self.tts.start("没有检测到人脸，请对准摄像头重拍")
             else:
-                self.tts.start("Face Detected. Start searching...")
+                # self.tts.start("Face Detected. Start searching...")
                 break
 
         search_res = self.face_reg.face_search(self.face_reg.read_img("img.jpg"))
@@ -325,10 +325,14 @@ class Init:
                         self.tts.start("你的任务还没有开始呢！")
                         c = str(input("ALLOW?: "))
                         if c == 1:
-                            self.sign_result["扫地"][index] = True
+                            self.sign_result["拖地"][index] = True
                             self.tts.start("签到完成")
                 except KeyError:
                     self.tts.start("扫地的还没扫呢！你怎么签名")
+                    c = str(input("ALLOW?: "))
+                    if c == 1:
+                        self.sign_result["拖地"][index] = True
+                        self.tts.start("签到完成")
                     return
             else:
                 self.tts.start("错误的人脸和对应列数！")
@@ -340,6 +344,7 @@ class Init:
                 return
 
             self.sign_result["倒垃圾"][index] = True
+            self.tts.start("签到完成")
         elif command == 7:
             index = self.arrangement_reader.get_index(self.arrangement_reader.get_name(int(user_id)),
                                                       self.arrangement_reader.class_arrangement["杂物间+柜台"])
@@ -348,6 +353,7 @@ class Init:
                 self.tts.start("你可不是干这个的啊！")
                 return
             self.sign_result["杂物间+柜台"][index] = True
+            self.tts.start("签到完成")
 
     def phase1_start(self):
 
@@ -396,9 +402,9 @@ class Init:
         #
         self.arrangement_reader.read_in()
 
-        public = self.arrangement_reader.get_names(self.arrangement_reader.public_labor_arranagement)
-        self.tts.start(public)
-        self.tts.start("这些同学马上跟着正诺恒，拿上一个扫把和垃圾铲，还有两个垃圾袋去工地！")
+        # public = self.arrangement_reader.get_names(self.arrangement_reader.public_labor_arranagement)
+        # self.tts.start(public)
+        # self.tts.start("这些同学马上跟着正诺恒，拿上一个扫把和垃圾铲，还有两个垃圾袋去工地！")
 
         self.phase1_start()
 
