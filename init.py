@@ -381,7 +381,7 @@ class Init:
         self.tts.start("这些同学负责整理黑板、图书柜、讲台")
         self.tts.start("黑板要擦干净，擦完以后一定打开屏幕，不要遮住了。讲台不要有垃圾，粉笔灰擦干净，完成后过来签名")
 
-        video_recorder = threading.Thread(target=self.camera_manager.capture_video, args=("phase1-record1.avi",))
+        video_recorder = threading.Thread(target=self.camera_manager.capture_video, args=("phase1-record1.mp4",))
         video_recorder.start()
 
         self.init_sign_window()
