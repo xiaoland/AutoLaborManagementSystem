@@ -25,5 +25,5 @@
     - opencv-python
     - pyaudio(windows需通过whl文件安装)
     - requests
-    - urllib
+    - numpy
 - 运行即可
