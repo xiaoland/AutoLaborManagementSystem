@@ -39,7 +39,6 @@ class FaceReg(object):
             file = open("./data/image/" + img, "rb")
             return_data = file.read()
             file.close()
-            print(return_data)
             return return_data
         elif img_type == "file_data":
             return img
